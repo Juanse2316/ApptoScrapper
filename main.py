@@ -1,5 +1,6 @@
 import flet 
 from flet import *
+from UI.header import AppHeader
 
 
 
@@ -10,7 +11,7 @@ def main(page: Page):
         Column(
             expand= True,
             controls=[
-                
+                AppHeader(),
             ]
         )
     )
