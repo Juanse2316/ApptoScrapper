@@ -1,5 +1,5 @@
 import flet as ft
-from scrapper import MercadoLibreScraper
+from Scrapper.scrapper import MercadoLibreScraper
 from datetime import datetime
 
 
