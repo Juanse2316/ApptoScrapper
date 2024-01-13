@@ -1,10 +1,11 @@
 import requests
+import os
 from bs4 import BeautifulSoup 
 import pandas as pd
 
 
 
-url = "https://listado.mercadolibre.com.co/"
+
 
 class MercadoLibreScraper:
     def __init__(self, base_url):
@@ -84,10 +85,13 @@ class MercadoLibreScraper:
         return None
 
     def save_to_csv(self, products, filename):
-        df = pd.DataFrame(products)
-        df.to_csv(filename, index=False)
-        print(f"Data saved to '{filename}'")
+        folder_path = "./Scraper_saved"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
-# scraper = MercadoLibreScraper(url)
-# products = scraper.search("ram ddr3 8gb")
-# scraper.save_to_csv(products, f"mercadolibre_products_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+        full_path = os.path.join(folder_path, filename)         
+
+        df = pd.DataFrame(products)
+        df.to_csv(full_path, index=False)
+        print(f"Data saved to '{full_path}'")
+
