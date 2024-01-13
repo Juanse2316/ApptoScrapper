@@ -2,6 +2,7 @@ from Scrapper.scrapper import MercadoLibreScraper
 from datetime import datetime
 from flet import *
 from UI.controls import add_to_control_reference, return_control_reference
+from UI.banner import AppBanner
 
 
 control_map = return_control_reference()
@@ -10,6 +11,7 @@ class AppHeader(UserControl):
     def __init__(self):
         super().__init__()
         self.query = ""
+        self.app_banner = AppBanner()
         self.progress_bar = ProgressBar(visible=False, expand=True)
         self.searching = False
         self.search_bar = self.app_header_search()
@@ -54,6 +56,11 @@ class AppHeader(UserControl):
     def optain_data(self, e):
         self.query = e.data 
 
+    def create_banner(self, show: bool):
+        
+        self.banner = self.app_banner.create_success_banner()
+        self.app_banner.show_banner(show)
+        self.update()
 
     def search_products(self, e):
         self.set_searching_state(True)
@@ -63,9 +70,12 @@ class AppHeader(UserControl):
         def update_progress(value):
             self.progress_bar.value = value
             self.update()
+        
         try:
             products = scraper.search(self.query, update_progress)
-            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", self.create_banner)
+        # except:
+
         finally:
             self.show_progress_bar(False)
             self.update()
@@ -112,6 +122,7 @@ class AppHeader(UserControl):
                     self.search_bar,
                     self.progress_bar,
                     self.search_button,
+                    self.app_banner,
                 ],
             )
 

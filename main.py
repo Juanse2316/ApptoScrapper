@@ -1,6 +1,7 @@
 import flet 
 from flet import *
 from UI.header import AppHeader
+from UI.banner import AppBanner
 
 
 
@@ -12,6 +13,7 @@ def main(page: Page):
             expand= True,
             controls=[
                 AppHeader(),
+                AppBanner(),
             ]
         )
     )

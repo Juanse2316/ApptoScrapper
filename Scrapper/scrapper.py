@@ -84,7 +84,7 @@ class MercadoLibreScraper:
             return next_page.get('href')
         return None
 
-    def save_to_csv(self, products, filename):
+    def save_to_csv(self, products, filename, on_success):
         folder_path = "./Scraper_saved"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -92,6 +92,20 @@ class MercadoLibreScraper:
         full_path = os.path.join(folder_path, filename)         
 
         df = pd.DataFrame(products)
+        
         df.to_csv(full_path, index=False)
-        print(f"Data saved to '{full_path}'")
+        on_success(True)
+        
+        # try:
+        #     df.to_csv(full_path, index=False)
+        #     on_success(True)
+            
+        # except Exception as e:
+        #     print(f"Error saving file: {e}")
+        #     print(f"{on_success}")
+
+
+    
+
+        # print(f"Data saved to '{full_path}'")
 
