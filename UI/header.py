@@ -10,8 +10,12 @@ class AppHeader(UserControl):
     def __init__(self):
         super().__init__()
         self.query = ""
+        self.progress_bar = ProgressBar(visible=False, expand=True)
+        self.searching = False
+        self.search_bar = self.app_header_search()
+        self.search_button = self.app_header_button()
 
-    def app_heade_instance(self):
+    def app_header_instance(self):
         """
         This fuction sets the class instance as a key:value 
         pair in the global dicth
@@ -20,7 +24,7 @@ class AppHeader(UserControl):
         add_to_control_reference("AppHeader", self)
         
     def app_header_brand(self):
-        return Container(content= Text( "Market Miner", size= 20, color= "#ffffff"))
+        return Container(padding=8,content= Text( "Market Miner", size= 20, color= "#ffffff", ))
     
     def app_header_search(self):
         return Container(
@@ -52,9 +56,25 @@ class AppHeader(UserControl):
 
 
     def search_products(self, e):
+        self.set_searching_state(True)
+        self.show_progress_bar(True)
         scraper = MercadoLibreScraper("https://listado.mercadolibre.com.co/")
-        products = scraper.search(self.query)
-        scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+
+        def update_progress(value):
+            self.progress_bar.value = value
+            self.update()
+        try:
+            products = scraper.search(self.query, update_progress)
+            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+        finally:
+            self.show_progress_bar(False)
+            self.update()
+
+    def show_progress_bar(self, show: bool):
+        self.progress_bar.visible = show
+        self.search_bar.visible = not show
+        self.search_button.visible = not show
+        self.update()
     
     def app_header_button(self):
         return Container(
@@ -66,9 +86,17 @@ class AppHeader(UserControl):
                 on_click= self.search_products
             )
         )
+    
+    def set_searching_state(self, is_searching):
+        self.searching = is_searching
+        self.search_bar.visible = not is_searching
+        self.search_button.visible = not is_searching
+        self.update()
 
     def build(self):
-        self.app_heade_instance()
+        self.app_header_instance()
+         
+    
 
         return Container(
             expand= True,
@@ -81,8 +109,9 @@ class AppHeader(UserControl):
                 alignment= MainAxisAlignment.SPACE_BETWEEN,
                 controls= [
                     self.app_header_brand(),
-                    self.app_header_search(),
-                    self.app_header_button(),
+                    self.search_bar,
+                    self.progress_bar,
+                    self.search_button,
                 ],
             )
 

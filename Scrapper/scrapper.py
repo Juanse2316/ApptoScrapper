@@ -10,20 +10,43 @@ class MercadoLibreScraper:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def search(self, query: str) -> list:
+    def _get_total_pages(self, soup):
+        try:
+            page_count_text = soup.find("li", class_="andes-pagination__page-count").text
+            
+            return int(page_count_text.split()[-1])
+        except Exception as e:
+            print(f"Error extracting total pages: {e}")
+            return 1  
+
+
+
+    def search(self, query: str, update_progress) -> list:
         url = f"{self.base_url}{query.replace(' ', '-')}"
         products = []
-
+        current_page = 1
+    
         try:
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            total_pages = self._get_total_pages(soup)  
+    
             while url:
-                response = requests.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
+                update_progress(current_page / total_pages)
+                current_page += 1
+    
                 products.extend(self._parse_results(soup))
                 url = self._get_next_page(soup)
+    
+                if url:
+                    response = requests.get(url)
+                    soup = BeautifulSoup(response.text, 'html.parser')
         except Exception as e:
             print(f"Error durante la búsqueda: {e}")
-
+    
         return products
+    
+    
     def _parse_results(self, soup: BeautifulSoup) -> list:
         products = []
         for item in soup.find_all("li", class_="ui-search-layout__item"):
