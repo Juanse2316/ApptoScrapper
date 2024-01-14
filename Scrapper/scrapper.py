@@ -93,16 +93,14 @@ class MercadoLibreScraper:
 
         df = pd.DataFrame(products)
         
-        df.to_csv(full_path, index=False)
-        on_success(True)
-        
-        # try:
-        #     df.to_csv(full_path, index=False)
-        #     on_success(True)
+
+        try:
+            df.to_csv(full_path, index=False)
+            on_success(True)
             
-        # except Exception as e:
-        #     print(f"Error saving file: {e}")
-        #     print(f"{on_success}")
+        except Exception as e:
+            print(f"Error saving file: {e}")
+
 
 
     

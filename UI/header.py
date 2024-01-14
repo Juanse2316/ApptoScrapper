@@ -56,10 +56,16 @@ class AppHeader(UserControl):
     def optain_data(self, e):
         self.query = e.data 
 
-    def create_banner(self, show: bool):
+    def create_banner_success(self, show: bool):
         
         self.banner = self.app_banner.create_success_banner()
-        self.app_banner.show_banner(show)
+        self.app_banner.show_success_banner(show)
+        self.update()
+
+    def create_banner_error(self, show: bool):
+        
+        self.banner = self.app_banner.create_error_banner()
+        self.app_banner.show_error_banner(show)
         self.update()
 
     def search_products(self, e):
@@ -72,10 +78,13 @@ class AppHeader(UserControl):
             self.update()
         
         try:
-            products = scraper.search(self.query, update_progress)
-            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", self.create_banner)
-        # except:
 
+            products = scraper.search(self.query, update_progress)
+            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", self.create_banner_success)
+            
+        except Exception as e:
+            print(f"{e}")
+            self.create_banner_error(True)
         finally:
             self.show_progress_bar(False)
             self.update()
