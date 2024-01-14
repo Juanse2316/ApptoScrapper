@@ -161,4 +161,4 @@ cython_debug/
 
 *.csv
 ./Scraper_saved
-./test.py
+test.py
