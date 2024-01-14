@@ -85,7 +85,7 @@ class MercadoLibreScraper:
         return None
 
     def save_to_csv(self, products, filename, on_success):
-        folder_path = "./Scraper_saved"
+        folder_path = "./Scrapper_saved"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
