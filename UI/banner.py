@@ -23,7 +23,8 @@ class AppBanner(UserControl):
             bgcolor=colors.GREEN_100,
             leading=Icon(icons.CHECK_CIRCLE, color=colors.GREEN, size=40),
             content=Text(
-                "Your file has been saved successfully in the directory Scrapper_saved"
+                "Your file has been saved successfully in the directory Scrapper_saved",
+                color= "#21130d"
                 ),
             actions=[
                 TextButton("Close", on_click= self.close_banner)

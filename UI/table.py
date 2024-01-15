@@ -37,12 +37,56 @@ class AppTable(UserControl):
         files= self.search_csv_file()
         row_list= []
 
+
+        header_text_left = Text("Saved Files", color=colors.WHITE, size=24, weight="bold")
+        header_container_left = Container(
+            content=header_text_left,
+            expand=1  
+        )
+
+        
+        header_text_right = Text("Actions", color=colors.WHITE, size=24, weight="bold", text_align="right")
+        header_container_right = Container(
+            content=header_text_right,
+            expand=1  
+        )
+        header_row = Row(
+            controls=[header_container_left, header_container_right],
+            alignment="space_between",  
+            vertical_alignment="center"
+        )
+        row_list.append(header_row)
+
         if files is not None:
             for file in files:
-                row = Row()
+
+                file_icon= Icon(
+                    icons.INSERT_DRIVE_FILE,
+                    size=24,
+                    color= colors.BLUE
+                )
+
+                file_name= Text(
+                    file,
+                    color=colors.WHITE,
+                    size=16, 
+                    weight="bold",
+                    )
                 
-                file_name= Text(file)
-                row.controls.append(file_name)
+                container = Container(
+                    expand=True,
+                    content=file_name,
+                    border_radius=6,
+                    padding=8,
+                    bgcolor="#29295C",
+                )
+
+                row = Row(
+                    controls=[file_icon, container],
+                    alignment="left",
+                    vertical_alignment="center",
+                )                
+
 
                 row_list.append(row)
 
@@ -58,8 +102,6 @@ class AppTable(UserControl):
 
         return Container(
             expand= True,
-            # height= 190,
-            bgcolor= "white10",
             border=border.all(1, "#ebebeb"),
             border_radius=8,
             padding=15, 

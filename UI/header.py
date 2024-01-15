@@ -41,6 +41,7 @@ class AppHeader(UserControl):
                    Icon(name=icons.SEARCH_ROUNDED, size=20, opacity=0.85),
                    TextField(
                        border_color="transparent",
+                       expand = True,
                        height=30,
                        text_size=19,
                        content_padding=0,
