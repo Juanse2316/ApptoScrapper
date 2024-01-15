@@ -10,8 +10,10 @@ def main(page: Page):
     page.title = "CSV Scrapper"
     page.bgcolor = "#1A1A40"
     page.padding = 20
-    page.add(
-        Column(
+
+    search_proccess = Tab(
+        text="Search Proccess",
+        content= Column(
             expand= True,
             controls=[
                 AppHeader(),
@@ -21,8 +23,35 @@ def main(page: Page):
             ]
         )
     )
+
+    data_analysis = Tab(
+        text= "Data Analysis",
+        content= Column(
+            expand=True,
+            controls=[Container(
+                expand=True,
+                content=Text("Coming Soon..."),
+                alignment=alignment.center,
+                bgcolor=colors.WHITE
+            ),
+            ]
+        )
+    )
+
+    tabs = Tabs(
+        tabs=[
+            search_proccess,
+            data_analysis,
+        ],
+        expand=1,
+        unselected_label_color=colors.WHITE,
+        divider_color= "transparent",
+        indicator_padding= 4,
+    )
+    
+    page.add(tabs)
     page.update()
-    pass
+    
 
 
 
