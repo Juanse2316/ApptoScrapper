@@ -5,6 +5,7 @@ import os
 class AppTable(UserControl):
     def __init__(self):
         super().__init__()
+        self.main_column = Column(expand=True)
         
 
     def app_Table_instance(self):
@@ -93,20 +94,21 @@ class AppTable(UserControl):
         return row_list
 
 
-
+    def update_csv_files(self):
+        rows = self.show_csv_file()
+        self.main_column.controls.clear()
+        self.main_column.controls.extend(rows)
+        self.update()
 
 
     def build(self):
         self.app_Table_instance()
-        rows = self.show_csv_file()
+        self.main_column.controls.extend(self.show_csv_file())
 
         return Container(
             expand= True,
             border=border.all(1, "#ebebeb"),
             border_radius=8,
             padding=15, 
-            content= Column(
-                expand=True,
-                controls= rows
-            ) 
+            content= self.main_column 
         )

@@ -88,6 +88,9 @@ class AppHeader(UserControl):
             self.create_banner_error(True)
         finally:
             self.show_progress_bar(False)
+            app_table = return_control_reference().get("AppTable")
+            if app_table:
+                app_table.update_csv_files()
             self.update()
 
     def show_progress_bar(self, show: bool):
