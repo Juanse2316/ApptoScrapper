@@ -5,7 +5,7 @@ import os
 class AppTable(UserControl):
     def __init__(self):
         super().__init__()
-        self.main_column = Column(expand=True)
+        self.main_column = Column(expand=True,)
         
 
     def app_Table_instance(self):
@@ -26,7 +26,7 @@ class AppTable(UserControl):
             csv_files.sort(key=lambda x: x[1], reverse=True)
 
 
-            last_files = [file[0] for file in csv_files[:10]]
+            last_files = [file[0] for file in csv_files[:100]]
 
             return last_files
 
@@ -38,25 +38,6 @@ class AppTable(UserControl):
         files= self.search_csv_file()
         row_list= []
 
-
-        header_text_left = Text("Saved Files", color=colors.WHITE, size=24, weight="bold")
-        header_container_left = Container(
-            content=header_text_left,
-            expand=1  
-        )
-
-        
-        header_text_right = Text("Actions", color=colors.WHITE, size=24, weight="bold", text_align="right")
-        header_container_right = Container(
-            content=header_text_right,
-            expand=1  
-        )
-        header_row = Row(
-            controls=[header_container_left, header_container_right],
-            alignment="space_between",  
-            vertical_alignment="center"
-        )
-        row_list.append(header_row)
 
         if files is not None:
             for file in files:

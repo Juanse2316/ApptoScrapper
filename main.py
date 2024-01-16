@@ -3,7 +3,7 @@ from flet import *
 from UI.header import AppHeader
 from UI.banner import AppBanner
 from UI.table import AppTable
-
+from UI.tableheader import AppTableHeader
 
 
 def main(page: Page):
@@ -19,7 +19,8 @@ def main(page: Page):
                 AppHeader(),
                 AppBanner(),
                 Divider(height=2, color= "transparent"),
-                AppTable(),
+                AppTableHeader(),
+                Column(expand=True, scroll="hidden", controls=[AppTable(),],),
             ]
         )
     )
