@@ -48,7 +48,8 @@ class AppHeader(UserControl):
                        cursor_color="black",
                        cursor_width=1,
                        hint_text="Search a Product",
-                       on_change= lambda e: self.optain_data(e)
+                       on_change= lambda e: self.optain_data(e),
+                       on_submit=lambda e: self.search_products(e) if self.query.strip() else None,
                    )
                ]
            ),
@@ -56,6 +57,8 @@ class AppHeader(UserControl):
     
     def optain_data(self, e):
         self.query = e.data 
+        self.search_button.disabled = not bool(self.query.strip())
+        self.update()
 
     def create_banner_success(self, show: bool):
         
@@ -70,6 +73,13 @@ class AppHeader(UserControl):
         self.update()
 
     def search_products(self, e):
+        if not self.query.strip():
+            app_banner = control_map.get("AppBanner")
+            if app_banner:
+                app_banner.show_warning_banner(True)
+            self.update()
+            return
+
         self.set_searching_state(True)
         self.show_progress_bar(True)
         scraper = MercadoLibreScraper("https://listado.mercadolibre.com.co/")
