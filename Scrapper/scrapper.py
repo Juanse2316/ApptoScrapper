@@ -1,5 +1,6 @@
 import requests
 import os
+import re
 from bs4 import BeautifulSoup 
 import pandas as pd
 
@@ -54,15 +55,30 @@ class MercadoLibreScraper:
             title = item.find("h2", class_="ui-search-item__title")
             price = item.find("span", class_="andes-money-amount__fraction")
             rating = item.find("span", class_="ui-search-reviews__rating-number")
-            rating = item.find("span", class_="ui-search-reviews__rating-number")
+            rating_amount = item.find("span", class_="ui-search-reviews__amount")
             discount_tag = item.find("span", class_="ui-search-price__discount")
+            free_shipping_tag = item.find("p", class_="ui-search-item__shipping ui-search-item__shipping--free")
+            variant_element = item.find("span", class_="ui-search-item__group__element ui-search-item__variations-text")
+            variant_count = 0
+            delivery_24h_elemnt = item.find("span", class_="ui-search-item__promise__text ui-search-item__promise__text--last")
+            
 
         
             try:
                 clean_price = price.text.strip().replace(',', '').replace('.', '').replace('$', '')
+                clean_rating_amount = rating_amount.text.strip().replace('(','').replace(')','')
                 clean_rating = None if rating is None else rating.text.strip()
                 has_discount = discount_tag is not None
                 discount_value = None
+                has_free_shipping = free_shipping_tag is not None
+                has_variants = variant_element is not None
+                has_delivery_24h = delivery_24h_elemnt is not None
+
+                if has_variants:
+                    match = re.search(r'\d+', variant_element.text)
+                    if match:
+                        variant_count = int(match.group())
+
                 if has_discount:
                     discount_value = int(discount_tag.text.strip().replace('%', '').replace(' ', '').replace('OFF', ''))
 
@@ -70,8 +86,13 @@ class MercadoLibreScraper:
                     "Title": title.text.strip(),
                     "Price": int(clean_price),
                     "Rating": clean_rating,
-                    "Has_discount": has_discount,  
-                    "Discount": discount_value,  
+                    "Rating Amount": int(clean_rating_amount),
+                    "Has discount": has_discount,  
+                    "Discount": discount_value,
+                    "Has free shipping": has_free_shipping, 
+                    "Has Variant":has_variants,
+                    "Variant count":variant_count, 
+                    "Delivery last 24h": has_delivery_24h,
                     })
             except ValueError:
                 
@@ -104,6 +125,4 @@ class MercadoLibreScraper:
 
 
     
-
-        # print(f"Data saved to '{full_path}'")
 

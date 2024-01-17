@@ -62,13 +62,13 @@ class AppHeader(UserControl):
 
     def create_banner_success(self, show: bool):
         
-        self.banner = self.app_banner.create_success_banner()
+        self.banner = self.app_banner.create_success_banner_saved()
         self.app_banner.show_success_banner(show)
         self.update()
 
     def create_banner_error(self, show: bool):
         
-        self.banner = self.app_banner.create_error_banner()
+        self.banner = self.app_banner.create_error_banner_saved()
         self.app_banner.show_error_banner(show)
         self.update()
 
