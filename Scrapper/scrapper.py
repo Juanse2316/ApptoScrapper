@@ -87,9 +87,8 @@ class MercadoLibreScraper:
                     "Has Variants": has_variants,
                     "Variant Count": variant_count,
                 })
-            except ValueError:
-                
-                print(f"Error al convertir el precio: {price.text}")
+            except (ValueError, AttributeError) as e:
+                print(f"Error al procesar el artículo: {e}")
         return products
 
     def _get_next_page(self, soup):
