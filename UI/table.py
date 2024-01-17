@@ -71,6 +71,20 @@ class AppTable(UserControl):
 
 
                 row_list.append(row)
+        else:
+            no_files_message = Text(
+              "No saved information available yet",
+              color=colors.WHITE,
+              size=18,
+              weight="bold",  
+            )
+            container = Row(
+                controls=[no_files_message],
+                alignment="center",
+                vertical_alignment="center",
+            )
+            row_list.append(container)
+
 
         return row_list
 
