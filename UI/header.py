@@ -91,7 +91,7 @@ class AppHeader(UserControl):
         try:
 
             products = scraper.search(self.query, update_progress)
-            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", self.create_banner_success)
+            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv", self.create_banner_success)
             
         except Exception as e:
             print(f"{e}")

@@ -1,8 +1,10 @@
 import requests
 import os
 import re
+from datetime import datetime
 from bs4 import BeautifulSoup 
 import pandas as pd
+
 
 
 
@@ -40,20 +42,22 @@ class MercadoLibreScraper:
         if not soup:
             return products
     
-        total_pages = self._get_total_pages(soup)   
+        total_pages = self._get_total_pages(soup) 
+        extraction_date = datetime.now().strftime("%Y-%m-%d %H")  
 
         while url:
             update_progress(current_page / total_pages)
+            products.extend(self._parse_results(soup, current_page, extraction_date))
             current_page += 1
 
-            products.extend(self._parse_results(soup))
+            
             url = self._get_next_page(soup)
             soup = self._make_request(url) if url else None
     
         return products
     
     
-    def _parse_results(self, soup: BeautifulSoup) -> list:
+    def _parse_results(self, soup: BeautifulSoup, current_page: int, extraction_date: datetime) -> list:
         products = []
         for item in soup.find_all("li", class_="ui-search-layout__item"):
             try:
@@ -71,7 +75,7 @@ class MercadoLibreScraper:
                 clean_rating = rating_element.text.strip() if rating_element else 0
                 clean_rating_amount = int(rating_amount_element.text.strip().replace('(','').replace(')','')) if rating_amount_element else 0
                 has_discount = discount_tag is not None
-                discount_value = int(discount_tag.text.strip().replace('%', '').replace(' ', '').replace('OFF', '')) if has_discount else None
+                discount_value = int(discount_tag.text.strip().replace('%', '').replace(' ', '').replace('OFF', '')) if has_discount else 0
                 has_free_shipping = free_shipping_tag is not None
                 has_variants = variant_element is not None
                 variant_count = int(re.search(r'\d+', variant_element.text).group()) if variant_element else 0
@@ -86,6 +90,8 @@ class MercadoLibreScraper:
                     "Has Free Shipping": has_free_shipping,
                     "Has Variants": has_variants,
                     "Variant Count": variant_count,
+                    "Page":current_page,
+                    "Extraction Date":extraction_date,
                 })
             except (ValueError, AttributeError) as e:
                 print(f"Error al procesar el artículo: {e}")
