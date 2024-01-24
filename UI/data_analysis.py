@@ -5,7 +5,7 @@ import seaborn as sn
 from flet import *
 from flet.matplotlib_chart import MatplotlibChart
 from UI.controls import add_to_control_reference, return_control_reference
-from UI.banner import AppBanner
+
 
 control_map = return_control_reference()
 
@@ -14,7 +14,7 @@ matplotlib.use("svg")
 class DataVisualizer(UserControl):
     def __init__(self):
         super().__init__()
-        self.app_banner = AppBanner()
+
         
 
     def app_data_analysis_instance(self):
@@ -25,12 +25,7 @@ class DataVisualizer(UserControl):
         
         add_to_control_reference("AppHeader", self)
 
-    def create_banner_error(self, show: bool):
-        
-        self.banner = self.app_banner.create_error_banner_datanlysis()
-        self.app_banner.show_success_banner(show)
-        self.update()
-
+   
     def load_csv(self, file_path):
         try:
             self.df = pd.read_csv(file_path)
@@ -63,5 +58,5 @@ class DataVisualizer(UserControl):
 
         return Column(
             expand= True,
-            controls= [self.app_banner,],
+            controls= [],
         )

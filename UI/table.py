@@ -67,7 +67,7 @@ class AppTable(UserControl):
                         icon=icons.SHOW_CHART_ROUNDED,
                         icon_color=colors.GREEN,
                         icon_size= 30,
-                        tooltip="Data Analysis",
+                        tooltip="Create a report on Data Analysis",
                         on_click=lambda e, file=file: self.on_data_button_click(e, file),
                     )
 
