@@ -10,6 +10,7 @@ class AppBanner(UserControl):
         self.success_banner = self.create_success_banner_saved()
         self.error_banner = self.create_error_banner_saved()
         self.warning = self.create_warning_banner_textfield()
+        self.errorcsv = self.create_error_banner_datanlysis()
 
     def app_banner_instance(self):
         """
@@ -57,6 +58,19 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click=self.close_banner)
             ],
         )
+    
+    def create_error_banner_datanlysis(self):
+        return Banner(
+            bgcolor=colors.RED_100,
+            leading=Icon(icons.ERROR_OUTLINE, color=colors.RED, size=40),
+            content=Text(
+                "Error loading the file",
+            ),
+            actions=[
+                TextButton("Close", on_click=self.close_banner)
+            ],
+        )
+
     def show_warning_banner(self, show: bool):
         self.warning.open = show
         self.update()
@@ -68,12 +82,17 @@ class AppBanner(UserControl):
     def show_error_banner(self, show: bool):
         self.error_banner.open = show
         self.update()
+
+    def show_error_datanlysis(self, show: bool):
+        self.errorcsv.open = show
+        self.update()
     
 
     def close_banner(self, e):
         self.success_banner.open = False
         self.error_banner.open = False
         self.warning.open = False
+        self.errorcsv.open = False
         self.update()
 
     def build(self):
