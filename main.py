@@ -36,7 +36,8 @@ def main(page: Page):
         content= Column(
             expand=True,
             controls=[data_visualizer,
-            ]
+            ], 
+            scroll="hidden"
         )
     )
 
