@@ -23,13 +23,19 @@ class MercadoLibreScraper:
             print(f"Error en la solicitud HTTP: {e}")
             return None    
 
-    def _get_total_pages(self, soup):
+    def _get_total_pages(self, query):
         try:
-            page_count_text = soup.find("li", class_="andes-pagination__page-count").text
-            return int(page_count_text.split()[-1])
+            url = f"{self.base_url}{query.replace(' ', '-')}_Desde_451_NoIndex_True"
+            soup = self._make_request(url)
+            
+            pagination_buttons = soup.find_all("button", class_="andes-pagination__link")
+            if pagination_buttons:
+                last_page_button = pagination_buttons[-1]
+                page_count_text = last_page_button.text
+                return int(page_count_text)
         except AttributeError  as e:
             print(f"Error extracting total pages: {e}")
-            return 1  
+            return 1 
 
 
 
@@ -42,7 +48,7 @@ class MercadoLibreScraper:
         if not soup:
             return products
     
-        total_pages = self._get_total_pages(soup) 
+        total_pages = self._get_total_pages( query) 
         extraction_date = datetime.now().strftime("%Y-%m-%d %H")  
 
         while url:
@@ -98,7 +104,7 @@ class MercadoLibreScraper:
         return products
 
     def _get_next_page(self, soup):
-        next_page = soup.find("a", class_="andes-pagination__link ui-search-link", attrs={"title": "Siguiente"})
+        next_page = soup.find("a", class_="andes-pagination__link", title="Siguiente")
         
         return next_page.get('href') if next_page else None
 
@@ -117,8 +123,3 @@ class MercadoLibreScraper:
             
         except Exception as e:
             print(f"Error saving file: {e}")
-
-
-
-    
-
