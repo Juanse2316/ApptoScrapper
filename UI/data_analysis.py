@@ -43,19 +43,35 @@ class DataVisualizer(UserControl):
     
     def create_graphic_page_vs_price(sef, df: pd.DataFrame):
         if df is not None:
+            sns.set(style="darkgrid")
+
+            precios_por_pagina = df.groupby('Page')['Price'].mean()
+
             plt.figure(figsize=(10, 5))
 
-            sns.scatterplot(data=df, x='Page', y='Price')
+            sns.lineplot(x=precios_por_pagina.index, y=precios_por_pagina.values)
 
-            plt.title('Relación entre Precio y Página')
-            plt.xlabel('Página')
-            plt.ylabel('Precio')
-            plt.grid(True)
-
+            plt.title('Precio Promedio por Página', color='white')
+            plt.xlabel('Página', color='white')
+            plt.ylabel('Precio Promedio', color='white')
+            
             fig = plt.gcf()
 
+            fig.set_facecolor('#121212')
+            ax = plt.gca()
+            ax.set_facecolor('#1e1e1e')
 
-            graphic= MatplotlibChart(fig)
+            ax.spines['bottom'].set_color('white')
+            ax.spines['top'].set_color('white')
+            ax.spines['left'].set_color('white')
+            ax.spines['right'].set_color('white')
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.tick_params(axis='x', colors='white')
+            ax.tick_params(axis='y', colors='white')
+            ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+    
+            graphic = MatplotlibChart(fig)
             return Container(expand=True, 
                              content=graphic, 
                              border_radius=6,
