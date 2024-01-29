@@ -64,7 +64,7 @@ class AppTable(UserControl):
                     )
 
                 data_button = IconButton(
-                        icon=icons.SHOW_CHART_ROUNDED,
+                        icon=icons.QUERY_STATS,
                         icon_color=colors.GREEN,
                         icon_size= 30,
                         tooltip="Create a report on Data Analysis",

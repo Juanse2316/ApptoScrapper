@@ -1,7 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sn
+import seaborn as sns
 from flet import *
 from flet.matplotlib_chart import MatplotlibChart
 from UI.controls import add_to_control_reference, return_control_reference
@@ -23,29 +23,16 @@ class DataVisualizer(UserControl):
         
         add_to_control_reference("AppHeader", self)
 
-    def content_componet(self, content, expand):
+    def card_stats(self, expand:int, content, color:str="white")->Container:
         return Container(
             expand= expand,
-            border=border.all(1, "#ebebeb"),
+            height=175,
+            border=border.all(2, color),
             border_radius=8,
             padding=8,
             content= content
         )
         
-
-    def text_component(self, text:str, width: int):
-        return Container(
-        width=width,
-        bgcolor="#ebebeb",
-        border_radius=6,
-        padding=8,
-        # margin=5,
-        content=Column(
-            controls=[
-                Text(value=text,color="black", weight="bold"),
-                ]
-            )
-        )
    
     def load_csv(self, file_path: str) -> pd.DataFrame:
         try:
@@ -56,67 +43,105 @@ class DataVisualizer(UserControl):
     
     def create_graphic_page_vs_price(sef, df: pd.DataFrame):
         if df is not None:
-            fig, ax = plt.subplots(figsize=(10, 5))
-            ax.scatter(df['Page'], df['Price'])
-            ax.set_title('Relación entre Precio y Página')
-            ax.set_xlabel('Página')
-            ax.set_ylabel('Precio')
-            ax.grid(True)
+            plt.figure(figsize=(10, 5))
+
+            sns.scatterplot(data=df, x='Page', y='Price')
+
+            plt.title('Relación entre Precio y Página')
+            plt.xlabel('Página')
+            plt.ylabel('Precio')
+            plt.grid(True)
+
+            fig = plt.gcf()
+
+
             graphic= MatplotlibChart(fig)
             return Container(expand=True, 
                              content=graphic, 
                              border_radius=6,
-                             border=border.all(1, "#ebebeb"),
                              )
         else:
             return Text("No data available to display")
         
     def create_price_analysis(self, df: pd.DataFrame):
         if df is not None:
-            minimum_price = round(df['Price'].min(), 2)
-            maximum_price = round(df['Price'].max(), 2)
+            minimum_price_product = df.loc[df['Price'].idxmin()]
+            maximum_price_product = df.loc[df['Price'].idxmax()]
             average_price = round(df['Price'].mean(), 2)
 
-            stat_width = 200
-
-            stats = [
-
-                Row(controls=[self.text_component(f"Minimum Price: {minimum_price}", stat_width)]),
-                Row(controls=[self.text_component(f"Maximum Price: {maximum_price}", stat_width)]),
-                Row(controls=[self.text_component(f"Average Price: {average_price}", stat_width)]),
-            ]
-            stats_column= Column(expand=True, controls=stats)
             
-            con= self.content_componet(stats_column, None)
 
             
-            return con
+
+            minimum_price_list = [
+                Row(controls=[
+                    Text(value= f"Minimum Price: {minimum_price_product['Price']}", 
+                         color='#00ff7f',
+                         weight="bold", 
+                         size=20 
+                         ),
+                    Icon(name=icons.TRENDING_DOWN, color='#00ff7f') ],alignment=alignment.top_center),
+                    ResponsiveRow(controls=[Text(value= f"Product Title: {minimum_price_product['Title']}",color='white', size= 16 )],)
+                    ]
+            
+            maximum_price_list = [
+                Row(controls=[
+                    Text(value= f"Maximum Price: {maximum_price_product['Price']}",
+                         color="#DC143C",
+                         weight="bold", 
+                         size=20),
+                    Icon(name=icons.TRENDING_UP, color="#DC143C")]),
+                    ResponsiveRow(controls=[Text(value= f"Product Title: {maximum_price_product['Title']}",color='white', size= 16 )],)
+                    ]
+            
+            average_list = [
+                Row(controls=[
+                    Text(value=f"Average Price: {average_price}", color="white", weight="bold", size=20, text_align=TextAlign.CENTER),
+                    Icon(name=icons.ATTACH_MONEY, color='green')
+                ], alignment=alignment.center)]
+
+            minimum_price = Column(expand=True, controls=minimum_price_list)
+            maximum_price = Column(expand=True, controls=maximum_price_list)
+            average = Column(expand=True, controls=average_list, alignment=alignment.top_center) 
+
+            con1 = self.card_stats(expand=1,content=minimum_price, color= "#00ff7f")
+            con2 = self.card_stats(expand=1,content=maximum_price, color='#DC143C')
+            con3 = self.card_stats(expand=1,content=average)
+            
+            row = Row(expand=True,controls=[con1,con2,con3])
+
+            
+            return row
         else:
             return Text("No data available to display")
         
         
     def visualize_data(self, file_path):
+        self.main_column.controls.clear()
+
         df = self.load_csv(file_path)
 
         
-        graphic = self.create_graphic_page_vs_price(df)
-        price_analysis = self.create_price_analysis(df)
+        graphic_container = self.create_graphic_page_vs_price(df)
+        price_analysis_container = self.create_price_analysis(df)
 
         
-        row = Row()
-        row.controls.append(price_analysis)
-        row.controls.append(graphic)
-
         
-        self.main_column.controls.append(row)
+        
+        row1 = Row(controls=[price_analysis_container,])
+        row2 = Row(controls=[ graphic_container,])
+
+        self.main_column.controls.append(row1)
+        self.main_column.controls.append(row2)
+        
 
         self.update()
 
     def build(self):
         self.app_data_analysis_instance()
-        self.main_column = Column(expand=True) 
+        self.main_column = Column(expand=True,alignment=alignment.center ) 
         return Container(
-            expand= True,
+            expand=True,
             border=border.all(1, "#ebebeb"),
             border_radius=8,
             padding=8, 
