@@ -3,10 +3,10 @@ from UI.controls import add_to_control_reference, return_control_reference
 import os
 
 class AppTable(UserControl):
-    def __init__(self):
+    def __init__(self, data_visualizer):
         super().__init__()
         self.main_column = Column(expand=True,)
-        
+        self.data_visualizer = data_visualizer
 
     def app_Table_instance(self):
         """
@@ -59,21 +59,53 @@ class AppTable(UserControl):
                     expand=True,
                     content=file_name,
                     border_radius=6,
-                    padding=8,
+                    padding=10,
                     bgcolor="#29295C",
-                )
+                    )
+
+                data_button = IconButton(
+                        icon=icons.QUERY_STATS,
+                        icon_color=colors.GREEN,
+                        icon_size= 30,
+                        tooltip="Create a report on Data Analysis",
+                        on_click=lambda e, file=file: self.on_data_button_click(e, file),
+                    )
 
                 row = Row(
-                    controls=[file_icon, container],
+                    controls=[file_icon, container, data_button],
                     alignment="left",
                     vertical_alignment="center",
                 )                
 
 
                 row_list.append(row)
+        else:
+            no_files_message = Text(
+              "No saved information available yet",
+              color=colors.WHITE,
+              size=18,
+              weight="bold",  
+            )
+            container = Row(
+                controls=[no_files_message],
+                alignment="center",
+                vertical_alignment="center",
+            )
+            row_list.append(container)
+
 
         return row_list
 
+
+    def on_data_button_click(self, event, file):
+        file_path = "./Scrapper_saved/" + file  
+        self.data_visualizer.visualize_data(file_path) 
+
+    def update_csv_files(self):
+        rows = self.show_csv_file()
+        self.main_column.controls.clear()
+        self.main_column.controls.extend(rows)
+        self.update()
 
     def update_csv_files(self):
         rows = self.show_csv_file()

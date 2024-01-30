@@ -4,12 +4,18 @@ from UI.header import AppHeader
 from UI.banner import AppBanner
 from UI.table import AppTable
 from UI.tableheader import AppTableHeader
+from UI.data_analysis import DataVisualizer
 
 
 def main(page: Page):
     page.title = "CSV Scrapper"
     page.bgcolor = "#1A1A40"
     page.padding = 20
+
+    data_visualizer = DataVisualizer()
+
+    app_table = AppTable(data_visualizer)
+    
 
     search_proccess = Tab(
         text="Search Proccess",
@@ -20,7 +26,7 @@ def main(page: Page):
                 AppBanner(),
                 Divider(height=2, color= "transparent"),
                 AppTableHeader(),
-                Column(expand=True, scroll="hidden", controls=[AppTable(),],),
+                Column(expand=True, scroll="hidden", controls=[app_table,],),
             ]
         )
     )
@@ -29,13 +35,9 @@ def main(page: Page):
         text= "Data Analysis",
         content= Column(
             expand=True,
-            controls=[Container(
-                expand=True,
-                content=Text("Coming Soon..."),
-                alignment=alignment.center,
-                bgcolor=colors.WHITE
-            ),
-            ]
+            controls=[data_visualizer,
+            ], 
+            scroll="hidden"
         )
     )
 
