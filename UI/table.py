@@ -2,6 +2,8 @@ from flet import *
 from UI.controls import add_to_control_reference, return_control_reference
 import os
 
+control_map = return_control_reference()
+
 class AppTable(UserControl):
     def __init__(self, data_visualizer):
         super().__init__()
@@ -98,8 +100,16 @@ class AppTable(UserControl):
 
 
     def on_data_button_click(self, event, file):
-        file_path = "./Scrapper_saved/" + file  
-        self.data_visualizer.visualize_data(file_path) 
+        app_banner = control_map.get("AppBanner")
+
+        try:
+            if app_banner:
+                app_banner.show_analysis_banner(True)
+
+            file_path = "./Scrapper_saved/" + file  
+            self.data_visualizer.visualize_data(file_path) 
+        except:
+            app_banner.show_generic_erro_bannerr(True)
 
     def update_csv_files(self):
         rows = self.show_csv_file()
