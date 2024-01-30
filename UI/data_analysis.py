@@ -14,6 +14,7 @@ matplotlib.use("svg")
 class DataVisualizer(UserControl):
     def __init__(self):
         super().__init__()
+        self.currently_displayed_file = None
         
     def app_data_analysis_instance(self):
         """
@@ -134,6 +135,7 @@ class DataVisualizer(UserControl):
         
     def visualize_data(self, file_path):
         self.main_column.controls.clear()
+        self.currently_displayed_file = file_path
 
         df = self.load_csv(file_path)
 
@@ -155,7 +157,8 @@ class DataVisualizer(UserControl):
 
     def build(self):
         self.app_data_analysis_instance()
-        self.main_column = Column(expand=True,alignment=alignment.center ) 
+        self.main_column = Column(expand=True,controls=[Row(controls=[Icon(icons.WARNING, color=colors.AMBER, size=40),
+        Text(value="You have not yet generated a report, please go to the [Search Proccess] tab, and generate a report.", color=colors.YELLOW_100, size=25)])],alignment=alignment.center) 
         return Container(
             expand=True,
             border=border.all(1, "#ebebeb"),

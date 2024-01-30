@@ -43,6 +43,8 @@ class AppTable(UserControl):
 
         if files is not None:
             for file in files:
+                file_with_path = "./Scrapper_saved/" + file
+                
 
                 file_icon= Icon(
                     icons.INSERT_DRIVE_FILE,
@@ -64,22 +66,23 @@ class AppTable(UserControl):
                     padding=10,
                     bgcolor="#29295C",
                     )
-
+                is_current_file = self.data_visualizer.currently_displayed_file == file_with_path
+                tooltip_text = "Create a report on Data Analysis" if not is_current_file else "Data Analysis already generated for this file"
                 data_button = IconButton(
                         icon=icons.QUERY_STATS,
-                        icon_color=colors.GREEN,
+                        icon_color=colors.GREY if is_current_file else colors.GREEN,
                         icon_size= 30,
-                        tooltip="Create a report on Data Analysis",
+                        tooltip=tooltip_text,
                         on_click=lambda e, file=file: self.on_data_button_click(e, file),
+                        disabled=is_current_file,
                     )
+                
 
                 row = Row(
                     controls=[file_icon, container, data_button],
                     alignment="left",
                     vertical_alignment="center",
                 )                
-
-
                 row_list.append(row)
         else:
             no_files_message = Text(
@@ -107,6 +110,7 @@ class AppTable(UserControl):
             self.data_visualizer.visualize_data(file_path) 
             if app_banner:
                 app_banner.show_analysis_banner(True)
+            self.update_csv_files()
         except:
             app_banner.show_generic_erro_bannerr(True)
 
