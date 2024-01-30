@@ -51,9 +51,9 @@ class DataVisualizer(UserControl):
 
             sns.lineplot(x=precios_por_pagina.index, y=precios_por_pagina.values)
 
-            plt.title('Precio Promedio por Página', color='white')
-            plt.xlabel('Página', color='white')
-            plt.ylabel('Precio Promedio', color='white')
+            plt.title('Average Price per Page', color='white')
+            plt.xlabel('Page', color='white')
+            plt.ylabel('Average Price', color='white')
             
             fig = plt.gcf()
 
