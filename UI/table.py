@@ -103,11 +103,10 @@ class AppTable(UserControl):
         app_banner = control_map.get("AppBanner")
 
         try:
-            if app_banner:
-                app_banner.show_analysis_banner(True)
-
             file_path = "./Scrapper_saved/" + file  
             self.data_visualizer.visualize_data(file_path) 
+            if app_banner:
+                app_banner.show_analysis_banner(True)
         except:
             app_banner.show_generic_erro_bannerr(True)
 
