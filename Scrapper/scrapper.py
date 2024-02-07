@@ -33,9 +33,17 @@ class MercadoLibreScraper:
                 last_page_button = pagination_buttons[-1]
                 page_count_text = last_page_button.text
                 return int(page_count_text)
-        except AttributeError  as e:
-            print(f"Error extracting total pages: {e}")
-            return 1 
+        except:
+            url = f"{self.base_url}{query.replace(' ', '-')}"
+            soup = self._make_request(url)
+            pagination_list = soup.find('ul', class_="andes-pagination ui-search-andes-pagination andes-pagination--large")
+            if pagination_list:
+                pages = pagination_list.find_all('button',class_="andes-pagination__link")
+                page = pages[-1]
+                page_count = page.text
+                return int(page_count)
+            
+            
 
 
 
@@ -74,7 +82,6 @@ class MercadoLibreScraper:
                 discount_tag = item.find("span", class_="ui-search-price__discount")
                 free_shipping_tag = item.find("p", class_="ui-search-item__shipping ui-search-item__shipping--free")
                 variant_element = item.find("span", class_="ui-search-item__group__element ui-search-item__variations-text")
-
                 # Procesamiento de los campos extraídos
                 title = title_element.text.strip() if title_element else None
                 clean_price = int(price_element.text.strip().replace(',', '').replace('.', '').replace('$', '')) if price_element else 0
