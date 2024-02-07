@@ -38,7 +38,7 @@ class AppHeader(UserControl):
                spacing=10,
                vertical_alignment=CrossAxisAlignment.CENTER,
                controls=[
-                   Icon(name=icons.SEARCH_ROUNDED, size=20, opacity=0.85),
+                   Icon(name=icons.SEARCH_ROUNDED, size=20, opacity=0.85, color="black"),
                    TextField(
                        border_color="transparent",
                        expand = True,
@@ -48,6 +48,7 @@ class AppHeader(UserControl):
                        cursor_color="black",
                        cursor_width=1,
                        hint_text="Search a Product",
+                       hint_style=TextStyle(color= "black", font_family="Roboto",  ),
                        on_change= lambda e: self.optain_data(e),
                        on_submit=lambda e: self.search_products(e) if self.query.strip() else None,
                    )
