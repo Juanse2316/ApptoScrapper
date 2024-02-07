@@ -7,6 +7,8 @@ from UI.tableheader import AppTableHeader
 from UI.data_analysis import DataVisualizer
 
 
+
+    
 def main(page: Page):
     page.title = "CSV Scrapper"
     page.bgcolor = "#1A1A40"
@@ -15,6 +17,7 @@ def main(page: Page):
     data_visualizer = DataVisualizer()
 
     app_table = AppTable(data_visualizer)
+
     
 
     search_proccess = Tab(
@@ -35,7 +38,8 @@ def main(page: Page):
         text= "Data Analysis",
         content= Column(
             expand=True,
-            controls=[data_visualizer,
+            controls=[
+                data_visualizer,
             ], 
             scroll="hidden"
         )
@@ -50,6 +54,7 @@ def main(page: Page):
         unselected_label_color=colors.WHITE,
         divider_color= "transparent",
         indicator_padding= 4,
+        
     )
     
     page.add(tabs)
