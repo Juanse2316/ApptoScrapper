@@ -10,7 +10,7 @@ from UI.data_analysis import DataVisualizer
 
     
 def main(page: Page):
-    page.title = "CSV Scrapper"
+    page.title = "Market Miner"
     page.bgcolor = "#1A1A40"
     page.padding = 20
 
