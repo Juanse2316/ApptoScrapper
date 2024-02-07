@@ -163,3 +163,4 @@ cython_debug/
 ./Scraper_saved
 test.py
 comandosgit.txt
+.vscode

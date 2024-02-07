@@ -14,6 +14,7 @@ matplotlib.use("svg")
 class DataVisualizer(UserControl):
     def __init__(self):
         super().__init__()
+        self.currently_displayed_file = None
         
     def app_data_analysis_instance(self):
         """
@@ -22,6 +23,18 @@ class DataVisualizer(UserControl):
         """
         
         add_to_control_reference("AppHeader", self)
+
+    def _customize_plot(self, ax):
+        """Apply custom styles to matplotlib axes."""
+        ax.spines['bottom'].set_color('white')
+        ax.spines['top'].set_color('white')
+        ax.spines['left'].set_color('white')
+        ax.spines['right'].set_color('white')
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+        ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
 
     def card_stats(self, expand:int, content, color:str="white")->Container:
         return Container(
@@ -41,7 +54,19 @@ class DataVisualizer(UserControl):
             self.create_banner_error(True)
         return self.df
     
-    def create_graphic_page_vs_price(sef, df: pd.DataFrame):
+    def create_graphic_page_vs_price(self, df: pd.DataFrame):
+
+        """
+        Creates a graphical representation of the average price per page from a given DataFrame.
+        If the DataFrame is empty, returns a message indicating no data is available.
+
+        Parameters:
+        - df: pd.DataFrame containing the data with 'Page' and 'Price' columns.
+
+        Returns:
+        - A Container with the graph if data is available, or a Text component if not.
+        """
+
         if df is not None:
             sns.set(style="darkgrid")
 
@@ -60,16 +85,7 @@ class DataVisualizer(UserControl):
             fig.set_facecolor('#121212')
             ax = plt.gca()
             ax.set_facecolor('#1e1e1e')
-
-            ax.spines['bottom'].set_color('white')
-            ax.spines['top'].set_color('white')
-            ax.spines['left'].set_color('white')
-            ax.spines['right'].set_color('white')
-            ax.xaxis.label.set_color('white')
-            ax.yaxis.label.set_color('white')
-            ax.tick_params(axis='x', colors='white')
-            ax.tick_params(axis='y', colors='white')
-            ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+            self._customize_plot(ax)
     
             graphic = MatplotlibChart(fig)
             return Container(expand=True, 
@@ -134,6 +150,7 @@ class DataVisualizer(UserControl):
         
     def visualize_data(self, file_path):
         self.main_column.controls.clear()
+        self.currently_displayed_file = file_path
 
         df = self.load_csv(file_path)
 
@@ -155,7 +172,8 @@ class DataVisualizer(UserControl):
 
     def build(self):
         self.app_data_analysis_instance()
-        self.main_column = Column(expand=True,alignment=alignment.center ) 
+        self.main_column = Column(expand=True,controls=[Row(controls=[Icon(icons.WARNING, color=colors.AMBER, size=40),
+        Text(value="You have not yet generated a report, please go to the [Search Proccess] tab, and generate a report.", color=colors.YELLOW_100, size=25)])],alignment=alignment.center) 
         return Container(
             expand=True,
             border=border.all(1, "#ebebeb"),

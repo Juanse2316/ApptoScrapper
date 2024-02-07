@@ -1,4 +1,5 @@
 from flet import *
+from threading import Timer
 from UI.controls import add_to_control_reference, return_control_reference
 
 control_map = return_control_reference()
@@ -10,6 +11,8 @@ class AppBanner(UserControl):
         self.success_banner = self.create_success_banner_saved()
         self.error_banner = self.create_error_banner_saved()
         self.warning = self.create_warning_banner_textfield()
+        self.analysis_banner = self.create_analysis_banner()
+        self.generic_erro_banner = self.create_generic_erro_banner()
 
     def app_banner_instance(self):
         """
@@ -20,7 +23,7 @@ class AppBanner(UserControl):
         add_to_control_reference("AppBanner", self)
     
     def create_success_banner_saved(self,):
-        return Banner(
+        banner = Banner(
             bgcolor=colors.GREEN_100,
             leading=Icon(icons.CHECK_CIRCLE, color=colors.GREEN, size=40),
             content=Text(
@@ -31,10 +34,12 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click= self.close_banner)
             ],
         )
+        Timer(8, self._close_banner_auto).start()
+        return banner
 
 
     def create_error_banner_saved(self,):
-        return Banner(
+        banner= Banner(
             bgcolor=colors.RED_100,
             leading=Icon(icons.ERROR_OUTLINE, color=colors.RED, size=40),
             content=Text(
@@ -44,6 +49,9 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click= self.close_banner)
             ],
         )
+        Timer(8, self._close_banner_auto).start()
+
+        return banner
     
     def create_warning_banner_textfield(self):
         return Banner(
@@ -57,6 +65,39 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click=self.close_banner)
             ],
         )
+    
+    def create_analysis_banner(self):
+        banner = Banner(
+            bgcolor=colors.GREEN_100,
+            leading=Icon(icons.CHECK_CIRCLE, color=colors.GREEN, size=40),
+            content=Text(
+                "Complete data analysis: Your information is waiting for you See the Data Analysis tab",
+                color="#21130d"
+            ),
+            actions=[
+                TextButton("Close", on_click=self.close_banner)
+            ],
+        )
+        
+        
+        Timer(8, self._close_banner_auto).start()
+
+        return banner
+    
+    def create_generic_erro_banner(self):
+        banner = Banner(
+            bgcolor=colors.RED_100,
+            leading=Icon(icons.ERROR_OUTLINE, color=colors.RED, size=40),
+            content=Text(
+                "Oops, something went wrong"
+                         ),
+            actions=[
+                TextButton("Close", on_click= self.close_banner)
+            ],
+        )
+        Timer(8, self._close_banner_auto).start()
+        return banner
+
     def show_warning_banner(self, show: bool):
         self.warning.open = show
         self.update()
@@ -68,12 +109,29 @@ class AppBanner(UserControl):
     def show_error_banner(self, show: bool):
         self.error_banner.open = show
         self.update()
-    
+    def show_analysis_banner(self, show: bool):
+        self.analysis_banner.open = show
+        self.update()
+
+    def show_generic_erro_banner(self, show:bool):
+        self.generic_erro_banner.open = show
+        self.update()
 
     def close_banner(self, e):
         self.success_banner.open = False
         self.error_banner.open = False
         self.warning.open = False
+        self.analysis_banner.open = False
+        self.generic_erro_banner.open= False
+        self.update()
+
+    def _close_banner_auto(self):
+        
+        self.success_banner.open = False
+        self.error_banner.open = False
+        self.warning.open = False
+        self.analysis_banner.open = False
+        self.generic_erro_banner.open = False
         self.update()
 
     def build(self):
@@ -83,7 +141,8 @@ class AppBanner(UserControl):
                 controls=[
                     self.success_banner,
                     self.error_banner,
-                    self.warning
+                    self.warning,
+                    self.analysis_banner
                 ]
             )
         )
