@@ -8,11 +8,14 @@ control_map = return_control_reference()
 class AppBanner(UserControl):
     def __init__(self):
         super().__init__()
+        self.timer = 5
+        self.current_timer = None
         self.success_banner = self.create_success_banner_saved()
         self.error_banner = self.create_error_banner_saved()
         self.warning = self.create_warning_banner_textfield()
         self.analysis_banner = self.create_analysis_banner()
         self.generic_erro_banner = self.create_generic_erro_banner()
+        
 
     def app_banner_instance(self):
         """
@@ -34,7 +37,6 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click= self.close_banner)
             ],
         )
-        Timer(8, self._close_banner_auto).start()
         return banner
 
 
@@ -49,7 +51,6 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click= self.close_banner)
             ],
         )
-        Timer(8, self._close_banner_auto).start()
 
         return banner
     
@@ -80,7 +81,6 @@ class AppBanner(UserControl):
         )
         
         
-        Timer(8, self._close_banner_auto).start()
 
         return banner
     
@@ -95,7 +95,6 @@ class AppBanner(UserControl):
                 TextButton("Close", on_click= self.close_banner)
             ],
         )
-        Timer(8, self._close_banner_auto).start()
         return banner
 
     def show_warning_banner(self, show: bool):
@@ -109,6 +108,7 @@ class AppBanner(UserControl):
     def show_error_banner(self, show: bool):
         self.error_banner.open = show
         self.update()
+
     def show_analysis_banner(self, show: bool):
         self.analysis_banner.open = show
         self.update()
@@ -118,21 +118,11 @@ class AppBanner(UserControl):
         self.update()
 
     def close_banner(self, e):
-        self.success_banner.open = False
-        self.error_banner.open = False
-        self.warning.open = False
-        self.analysis_banner.open = False
-        self.generic_erro_banner.open= False
+        for banner in [self.success_banner, self.error_banner, self.warning, self.analysis_banner, self.generic_erro_banner]:
+            banner.open = False
         self.update()
 
-    def _close_banner_auto(self):
-        
-        self.success_banner.open = False
-        self.error_banner.open = False
-        self.warning.open = False
-        self.analysis_banner.open = False
-        self.generic_erro_banner.open = False
-        self.update()
+
 
     def build(self):
         self.app_banner_instance()

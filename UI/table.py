@@ -102,7 +102,7 @@ class AppTable(UserControl):
         return row_list
 
 
-    def on_data_button_click(self, event, file):
+    def on_data_button_click(self, e, file):
         app_banner = control_map.get("AppBanner")
 
         try:

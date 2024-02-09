@@ -49,6 +49,7 @@ class AppHeader(UserControl):
                        cursor_width=1,
                        hint_text="Search a Product",
                        hint_style=TextStyle(color= "black", font_family="Roboto",  ),
+                       text_style=TextStyle(color= "black",),
                        on_change= lambda e: self.optain_data(e),
                        on_submit=lambda e: self.search_products(e) if self.query.strip() else None,
                    )

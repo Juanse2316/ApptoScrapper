@@ -7,7 +7,6 @@ from UI.tableheader import AppTableHeader
 from UI.data_analysis import DataVisualizer
 
 
-
     
 def main(page: Page):
     page.title = "Market Miner"
@@ -18,15 +17,14 @@ def main(page: Page):
 
     app_table = AppTable(data_visualizer)
 
-    
 
     search_proccess = Tab(
         text="Search Proccess",
         content= Column(
             expand= True,
             controls=[
-                AppHeader(),
                 AppBanner(),
+                AppHeader(),
                 Divider(height=2, color= "transparent"),
                 AppTableHeader(),
                 Column(expand=True, scroll="hidden", controls=[app_table,],),
@@ -39,6 +37,7 @@ def main(page: Page):
         content= Column(
             expand=True,
             controls=[
+                
                 data_visualizer,
             ], 
             scroll="hidden"
@@ -53,8 +52,7 @@ def main(page: Page):
         expand=1,
         unselected_label_color=colors.WHITE,
         divider_color= "transparent",
-        indicator_padding= 4,
-        
+        indicator_padding= 4,  
     )
     
     page.add(tabs)
