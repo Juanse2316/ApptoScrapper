@@ -29,10 +29,7 @@ class AppBanner(UserControl):
         banner = Banner(
             bgcolor=colors.GREEN_100,
             leading=Icon(icons.CHECK_CIRCLE, color=colors.GREEN, size=40),
-            content=Text(
-                "Your file has been saved successfully in the directory Scrapper_saved",
-                color= "#21130d"
-                ),
+
             actions=[
                 TextButton("Close", on_click= self.close_banner)
             ],
@@ -44,9 +41,6 @@ class AppBanner(UserControl):
         banner= Banner(
             bgcolor=colors.RED_100,
             leading=Icon(icons.ERROR_OUTLINE, color=colors.RED, size=40),
-            content=Text(
-                "Oops, there were some errors while trying to save the file."
-                         ),
             actions=[
                 TextButton("Close", on_click= self.close_banner)
             ],
@@ -101,11 +95,13 @@ class AppBanner(UserControl):
         self.warning.open = show
         self.update()
     
-    def show_success_banner(self, show: bool):
+    def show_success_banner(self, show: bool, message: str):
+        self.success_banner.content = Text(message, color="#21130d")
         self.success_banner.open = show
         self.update()
 
-    def show_error_banner(self, show: bool):
+    def show_error_banner(self, show: bool, message: str):
+        self.error_banner.content = Text(message, color="#21130d")
         self.error_banner.open = show
         self.update()
 

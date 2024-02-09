@@ -1,4 +1,4 @@
-from Scrapper.scrapper import MercadoLibreScraper
+from Scrapper.scrapper import MercadoLibre, Amazon
 from datetime import datetime
 from flet import *
 from UI.controls import add_to_control_reference, return_control_reference
@@ -17,6 +17,9 @@ class AppHeader(UserControl):
         self.app_dropdown =self.app_header_dropdown()        
         self.search_bar = self.app_header_search()
         self.search_button = self.app_header_button()
+        
+
+
 
     def app_header_instance(self):
         """
@@ -37,10 +40,9 @@ class AppHeader(UserControl):
                 dropdown.Option("MercadoLibre"),
                 dropdown.Option("Amazon"),
             ],
-            
         )
         )
-    
+
     def app_header_search(self):
         return Container(
            width= 600,
@@ -75,16 +77,16 @@ class AppHeader(UserControl):
         self.search_button.disabled = not bool(self.query.strip())
         self.update()
 
-    def create_banner_success(self, show: bool):
+    def create_banner_success(self, show: bool, message: str):
         
         self.banner = self.app_banner.create_success_banner_saved()
-        self.app_banner.show_success_banner(show)
+        self.app_banner.show_success_banner(show, message)
         self.update()
 
-    def create_banner_error(self, show: bool):
+    def create_banner_error(self, show: bool, message: str):
         
         self.banner = self.app_banner.create_error_banner_saved()
-        self.app_banner.show_error_banner(show)
+        self.app_banner.show_error_banner(show, message)
         self.update()
 
     def search_products(self, e):
@@ -97,7 +99,12 @@ class AppHeader(UserControl):
 
         self.set_searching_state(True)
         self.show_progress_bar(True)
-        scraper = MercadoLibreScraper("https://listado.mercadolibre.com.co/")
+
+        self.selected_scraper = self.app_dropdown.content.value
+        if self.selected_scraper == "MercadoLibre":
+            scraper = MercadoLibre("https://listado.mercadolibre.com.co/")
+        elif self.selected_scraper == "Amazon":
+            scraper = Amazon("https://www.amazon.com/s?k=")
 
         def update_progress(value):
             self.progress_bar.value = value
@@ -106,11 +113,15 @@ class AppHeader(UserControl):
         try:
 
             products = scraper.search(self.query, update_progress)
-            scraper.save_to_csv(products, f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv", self.create_banner_success)
+            
+            file_name = f"mercadolibre_products_{self.query}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv"
+            print(f"{file_name}")
+            scraper.save_to_csv(products, file_name, self.create_banner_success, self.create_banner_error)
+            
             
         except Exception as e:
             print(f"{e}")
-            self.create_banner_error(True)
+            self.create_banner_error(True, e)
         finally:
             self.show_progress_bar(False)
             app_table = return_control_reference().get("AppTable")
@@ -174,11 +185,11 @@ class AppHeader(UserControl):
                 expand=True,
                 alignment= MainAxisAlignment.SPACE_BETWEEN,
                 controls= [
+                    self.app_banner,
                     self.app_dropdown,
                     self.search_bar,
                     self.progress_bar,
                     self.search_button,
-                    self.app_banner,
                 ],
             )
 

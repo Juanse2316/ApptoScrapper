@@ -7,21 +7,43 @@ import pandas as pd
 
 
 
-
-
-
-class MercadoLibreScraper:
+class ScraperBase:
     def __init__(self, base_url):
         self.base_url = base_url
 
     def _make_request(self, url):
         try:
             response = requests.get(url)
-            response.raise_for_status()  
+            response.raise_for_status()
             return BeautifulSoup(response.text, 'html.parser')
         except requests.RequestException as e:
             print(f"Error en la solicitud HTTP: {e}")
-            return None    
+            return None
+
+    def save_to_csv(self, products, filename, on_success, on_error):
+        folder_name = type(self).__name__
+        folder_path = f"./Scrapper_saved/{folder_name}"
+        os.makedirs(folder_path, exist_ok=True)
+
+        full_path = os.path.join(folder_path, filename)
+
+        
+        try:
+            if not products:
+                raise ValueError("The product list is empty, the CSV file will not be created.")
+            
+            df = pd.DataFrame(products)
+            df.to_csv(full_path, index=False)
+            on_success(True, f"Archivo guardado en {full_path}")  
+        except Exception as e:
+            print(f"Error saving file: {e}")
+            on_error(True, e)
+
+
+class MercadoLibre(ScraperBase):
+    def __init__(self, base_url):
+        super().__init__(base_url)
+
 
     def _get_total_pages(self, query):
         try:
@@ -42,10 +64,6 @@ class MercadoLibreScraper:
                 page = pages[-1]
                 page_count = page.text
                 return int(page_count)
-            
-            
-
-
 
     def search(self, query: str, update_progress) -> list:
         url = f"{self.base_url}{query.replace(' ', '-')}"
@@ -114,19 +132,24 @@ class MercadoLibreScraper:
         next_page = soup.find("a", class_="andes-pagination__link", title="Siguiente")
         
         return next_page.get('href') if next_page else None
+    
+class Amazon(ScraperBase):
+    def __init__(self, base_url):
+        super().__init__(base_url)
 
-    def save_to_csv(self, products, filename, on_success):
-        folder_path = "./Scrapper_saved"
-        os.makedirs(folder_path, exist_ok=True)  # Crea la carpeta si no existe
-
-        full_path = os.path.join(folder_path, filename)
-
-        df = pd.DataFrame(products)
-        
-
-        try:
-            df.to_csv(full_path, index=False)
-            on_success(True)
-            
-        except Exception as e:
-            print(f"Error saving file: {e}")
+    def _get_total_pages(self, query):
+        pass
+    def search(self, query: str, update_progress) -> list:
+        pass
+    def _parse_results(self, soup: BeautifulSoup, current_page: int, extraction_date: datetime) -> list:
+        pass
+    def _get_next_page(self, soup):
+        pass
+# MercadoLibre = MercadoLibre("https://listado.mercadolibre.com.co/")
+# products = MercadoLibre.search("sala en l", lambda x: print(x))
+# query = "sala en l"
+# print(f"{query}")
+# print(f"{len(products)} productos encontrados")
+# file_name = f"mercadolibre_products_{query}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv"
+# print(f"{file_name}")
+# MercadoLibre.save_to_csv(products, file_name, lambda x: print(x))
