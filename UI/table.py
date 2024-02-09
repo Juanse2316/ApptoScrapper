@@ -48,7 +48,7 @@ class AppTable(UserControl):
 
                 file_icon= Icon(
                     icons.INSERT_DRIVE_FILE,
-                    size=24,
+                    size=27,
                     color= colors.BLUE
                 )
 
@@ -68,14 +68,16 @@ class AppTable(UserControl):
                     )
                 is_current_file = self.data_visualizer.currently_displayed_file == file_with_path
                 tooltip_text = "Create a report on Data Analysis" if not is_current_file else "Data Analysis already generated for this file"
-                data_button = IconButton(
+                data_button = Container(
+                    width= 70,
+                    content=IconButton(
                         icon=icons.QUERY_STATS,
-                        icon_color=colors.GREY if is_current_file else colors.GREEN,
+                        icon_color="#CAD7FB" if is_current_file else colors.GREEN,
                         icon_size= 30,
                         tooltip=tooltip_text,
                         on_click=lambda e, file=file: self.on_data_button_click(e, file),
                         disabled=is_current_file,
-                    )
+                    ))
                 
 
                 row = Row(

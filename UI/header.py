@@ -113,12 +113,21 @@ class AppHeader(UserControl):
     
     def app_header_button(self):
         return Container(
-            height= 50,
+            height= 100,
             width= 200,
             padding=10,
             content= ElevatedButton(
-                text= "Search",
-                on_click= self.search_products
+                content= Text("Search", color='#4140C2', size=20, ),
+                on_click= self.search_products,
+                bgcolor= "#E2EAFD",
+                style= ButtonStyle(
+                    shape= StadiumBorder(),
+                    side={
+                        MaterialState.DEFAULT: BorderSide(1, "wite"),
+                        MaterialState.HOVERED: BorderSide(3, "#4140C2"),
+                    },
+                    elevation={"pressed": 0, "": 1},
+                )
             )
         )
     

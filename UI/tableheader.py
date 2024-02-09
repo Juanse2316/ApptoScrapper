@@ -16,12 +16,13 @@ class AppTableHeader(UserControl):
         add_to_control_reference("AppTableHeader", self)
 
     def header_container_left(self):
-        self.header_text_left = Text("Saved Files", color=colors.WHITE, size=24, weight="bold")
+        self.header_text_left = Text("Saved Files", color=colors.WHITE, size=24, weight="bold",)
         
         
         return Container(
             content=self.header_text_left,
-            expand=1  
+            expand=1, 
+            padding=padding.only(left=10)
         )
 
     def header_container_right(self):
@@ -30,12 +31,16 @@ class AppTableHeader(UserControl):
         
         return Container(
             content=header_text_right,
-            expand=1  
+            expand=1, 
+            padding=padding.only(right=10)  
         )
     
     def build(self):
-        return Row(
+        return Container(
+        
+            padding=padding.only(top=10, bottom=10),
+            content=Row(
             controls=[self.left, self.right],
             alignment="space_between",  
             vertical_alignment="center"
-        )
+        ))
