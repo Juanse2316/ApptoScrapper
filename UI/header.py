@@ -14,6 +14,7 @@ class AppHeader(UserControl):
         self.app_banner = AppBanner()
         self.progress_bar = ProgressBar(visible=False, expand=True)
         self.searching = False
+        self.app_dropdown =self.app_header_dropdown()        
         self.search_bar = self.app_header_search()
         self.search_button = self.app_header_button()
 
@@ -25,8 +26,20 @@ class AppHeader(UserControl):
         
         add_to_control_reference("AppHeader", self)
         
-    def app_header_brand(self):
-        return Container(padding=8,content= Text( "Market Miner", size= 20, color= "#ffffff", ))
+    def app_header_dropdown(self):
+        return Container(
+            padding= 10,
+            content= Dropdown(
+            hint_text="Select a page to search",
+            content_padding= 8,
+            focused_border_width=colors.BLUE_200,
+            options=[
+                dropdown.Option("MercadoLibre"),
+                dropdown.Option("Amazon"),
+            ],
+            
+        )
+        )
     
     def app_header_search(self):
         return Container(
@@ -50,14 +63,14 @@ class AppHeader(UserControl):
                        hint_text="Search a Product",
                        hint_style=TextStyle(color= "black", font_family="Roboto",  ),
                        text_style=TextStyle(color= "black",),
-                       on_change= lambda e: self.optain_data(e),
+                       on_change= lambda e: self.obtain_data(e),
                        on_submit=lambda e: self.search_products(e) if self.query.strip() else None,
                    )
                ]
            ),
         )
     
-    def optain_data(self, e):
+    def obtain_data(self, e):
         self.query = e.data 
         self.search_button.disabled = not bool(self.query.strip())
         self.update()
@@ -117,16 +130,25 @@ class AppHeader(UserControl):
             width= 200,
             padding=10,
             content= ElevatedButton(
-                content= Text("Search", color='#4140C2', size=20, ),
+                text="Search",
                 on_click= self.search_products,
-                bgcolor= "#E2EAFD",
                 style= ButtonStyle(
                     shape= StadiumBorder(),
+                    color={
+                        MaterialState.DEFAULT: colors.BLACK,
+                        MaterialState.DISABLED: colors.WHITE,
+                    },
+                    bgcolor={
+                        MaterialState.DEFAULT: "#E2EAFD",
+                        MaterialState.DISABLED: colors.GREY,
+                    },
                     side={
                         MaterialState.DEFAULT: BorderSide(1, "wite"),
                         MaterialState.HOVERED: BorderSide(3, "#4140C2"),
                     },
                     elevation={"pressed": 0, "": 1},
+
+                    
                 )
             )
         )
@@ -152,7 +174,7 @@ class AppHeader(UserControl):
                 expand=True,
                 alignment= MainAxisAlignment.SPACE_BETWEEN,
                 controls= [
-                    self.app_header_brand(),
+                    self.app_dropdown,
                     self.search_bar,
                     self.progress_bar,
                     self.search_button,
