@@ -1,4 +1,4 @@
-from Scrapper.scrapper import MercadoLibre, Amazon
+from Scraper.scraper import MercadoLibre, Amazon
 from datetime import datetime
 from flet import *
 from UI.controls import add_to_control_reference, return_control_reference
@@ -190,6 +190,7 @@ class AppHeader(UserControl):
                     self.search_bar,
                     self.progress_bar,
                     self.search_button,
+
                 ],
             )
 

@@ -21,8 +21,8 @@ class AppTable(UserControl):
     def search_csv_file(self):
         try:
 
-            csv_files = [(file, os.path.getmtime(os.path.join("./Scrapper_saved", file))) 
-                            for file in os.listdir("./Scrapper_saved") 
+            csv_files = [(file, os.path.getmtime(os.path.join("./Scraper_saved/MercadoLibre", file))) 
+                            for file in os.listdir("./Scraper_saved/MercadoLibre") 
                             if file.endswith('.csv')]
 
             csv_files.sort(key=lambda x: x[1], reverse=True)
@@ -43,7 +43,7 @@ class AppTable(UserControl):
 
         if files is not None:
             for file in files:
-                file_with_path = "./Scrapper_saved/" + file
+                file_with_path = "./Scraper_saved/MercadoLibre/" + file
                 
 
                 file_icon= Icon(
@@ -108,7 +108,7 @@ class AppTable(UserControl):
         app_banner = control_map.get("AppBanner")
 
         try:
-            file_path = "./Scrapper_saved/" + file  
+            file_path = "./Scraper_saved/MercadoLibre/" + file  
             self.data_visualizer.visualize_data(file_path) 
             if app_banner:
                 app_banner.show_analysis_banner(True)
